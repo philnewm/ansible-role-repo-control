@@ -18,14 +18,14 @@ env:
   TEMPLATE_REPO: "philnewm/ansible-role-template"
 
 jobs:
-  create_repo:
+  create-repo:
     runs-on: ubuntu-latest
 
     steps:
       - name: Create new Repo `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`
         run: |
           gh repo create ${{ env.TARGET_REPO }} --template ${{ env.TEMPLATE_REPO }} --public
-          echo "::notice::Recreated repository `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`"
+          echo "::notice::Created repository '${{ env.TARGET_REPO }}' from template '${{ env.TEMPLATE_REPO }}'"
 
       - name: Get repo owner
         id: query-owner
@@ -45,9 +45,9 @@ jobs:
         run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
 
-  update_names:
+  update-names:
     runs-on: ubuntu-latest
-    needs: create_repo
+    needs: create-repo
 
     steps:
       - name: Checkout Repository
@@ -62,6 +62,11 @@ jobs:
           files_to_update="${{ env.FILE_LIST }}"
           IFS=',' read -r -a file_array <<< "$files_to_update"
           echo "files=${file_array[@]}" >> $GITHUB_OUTPUT
+
+      - name: Show directory
+        run: |
+          echo "$(pwd)"
+          echo "$(ls -la)"
 
       - name: Replace template Name
         run: |
