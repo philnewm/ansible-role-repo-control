@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 env:
+  GITHUB_TOKEN: ${{ secrets.REPO_CTRL_TOKEN }}
   ANSIBLE_GALAXY_TOKEN: ${{ secrets.GALAXY_TOKEN }}
   ROLE_REPO_LIST: ${{ vars.ROLE_REPO_LIST }}
 
