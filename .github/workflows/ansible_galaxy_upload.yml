@@ -1,0 +1,27 @@
+name: ⬆️ Ansible Galaxy Upload
+
+on:
+  workflow_call:
+    secrets:
+      galaxy_token:
+        required: true
+    inputs:
+      repo_owner:
+        description: "Owner or Organization name"
+        type: string
+        required: true
+      repo_name:
+        description: "Name of the repo to upload to galaxy"
+        type: string
+        required: true
+
+env:
+    ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🟢 Import role to ansible-galaxy
+        run: |
+          ansible-galaxy role import ${{ inputs.repo_owner }} ${{ inputs.repo_name }} --token ${{ secrets.galaxy_token }}
