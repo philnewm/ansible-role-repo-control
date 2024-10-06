@@ -26,9 +26,15 @@ jobs:
         run: |
           gh repo create ${{ env.TARGET_REPO }} --template ${{ env.TEMPLATE_REPO }} --public
           echo "::notice::Recreated repository `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`"
-    
+
+      - name: Get repo owner
+        id: query-owner
+        run: |
+          repo_owner=$(gh repo view philnewm/ansible-gnome --json owner --jq '.owner.login')
+          echo "repo_owner=$repo_owner" >> $GITHUB_OUTPUT
+
       - name: Add ${{ github.actor }} as repo collaborator
-        if: always()
+        if: steps.query-owner.outputs.repo_owner != github.actor
         run: |
           gh api --method PUT \
             -H "Accept: application/vnd.github.v3+json" \
