@@ -82,11 +82,11 @@ jobs:
 
       - name: Replace state variable
         run: |
-          TEMPLATE_STATE_VAR="${{ env.TEMPLATE_NAME }}"
+          TEMPLATE_STATE_VAR="${{ env.TEMPLATE_STATE_VAR }}"
           NEW_STATE_VAR="${{ steps.set-state-far.outputs.state_var }}"
 
           for file in ${{ steps.parse_files.outputs.files }}; do
-            sed -i "s/TEMPLATE_STATE_VAR/$NEW_STATE_VAR/g" "$file"
+            sed -i "s/$TEMPLATE_STATE_VAR/$NEW_STATE_VAR/g" "$file"
           done
 
       - name: Commit Changes
