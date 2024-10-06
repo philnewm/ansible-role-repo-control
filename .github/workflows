@@ -1,0 +1,73 @@
+name: Create new role repo
+
+on:
+  workflow_dispatch:
+    inputs:
+      role_name:
+        type: string
+        required: true
+
+env:
+  ANSIBLE_GALAXY_TOKEN: ${{ secrets.GALAXY_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.REPO_CTRL_TOKEN }}
+  TEMPLATE_NAME: "ansible-role-template"  # TODO set from repo name
+  TARGET_REPO: "ansible-${{ inputs.repo_name }}"
+  ROLE_NAME: ${{ inputs.role_name }}
+  FILE_LIST: ${{ vars.FILE_LIST }}
+  TEMPLATE_REPO: "philnewm/ansible-role-template"
+
+jobs:
+  create_repo:
+    runs_on: ubuntu-latest
+
+    steps:
+      - name: Create new Repo `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`
+        run: |
+          gh repo create ${{ env.TARGET_REPO }} --template ${{ env.TEMPLATE_REPO }} --public
+          echo "::notice::Recreated repository `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`"
+    
+      - name: Add ${{ github.actor }} as repo collaborator
+        if: always()
+        run: |
+          gh api --method PUT \
+            -H "Accept: application/vnd.github.v3+json" \
+            "/repos/${{ env.TARGET_REPO }}/collaborators/${{ github.actor }}" \
+            -f permission=admin
+
+      - name: Set repo secrets
+        run: |
+          gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ secrets.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
+
+  update_names:
+    runs_on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          depth: 0
+
+      - name: Parse Files to Update
+        id: parse_files
+        run: |
+          files_to_update="${{ env.FILE_LIST }}"
+          IFS=',' read -r -a file_array <<< "$files_to_update"
+          echo "files=${file_array[@]}" >> $GITHUB_OUTPUT
+
+      - name: Replace template Name
+        run: |
+          TEMPLATE_NAME="${{ github.event.inputs.template-name }}"
+          NEW_NAME="${{ inputs.repo_name }}"
+          
+          # Loop through each file and replace TEMPLATE_NAME with NEW_NAME
+          for file in ${{ steps.parse_files.outputs.files }}; do
+            sed -i "s/$TEMPLATE_NAME/$NEW_NAME/g" "$file"
+          done
+
+      - name: Commit Changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Updated template name to ${{ env.ROLE_NAME }}"
+          git push
