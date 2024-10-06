@@ -18,8 +18,12 @@ jobs:
         id: prepare
         run: |
           # Convert ROLE_REPO_LIST from comma-separated to JSON array
-          repos="[\"$(echo '${{ env.ROLE_REPO_LIST }}' | sed 's/,/\",\"/g')\"]"
+          repos="[\"$(echo '${{ env.ROLE_REPO_LIST }}' | tr -d '[:space:]' | sed 's/,/\",\"/g')\"]"
           echo "repo_list=$repos" >> $GITHUB_OUTPUT
+
+      - name: Log repo list
+        run: |
+          echo "Converted repo list: ${{ steps.prepare.outputs.repo_list }}"
 
   update-galaxy-token:
     runs-on: ubuntu-latest
