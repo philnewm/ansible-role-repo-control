@@ -1,4 +1,4 @@
-name: 🔃 Update galaxy token
+name: 🔄 Update galaxy token
 
 on:
   workflow_dispatch:
@@ -34,6 +34,6 @@ jobs:
         repo: ${{ fromJson(needs.prepare-repo-list.outputs.repo_list) }}
 
     steps:
-      - name: 🔁 Set or update galaxy token
+      - name: 💾 Set or update galaxy token
         run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo "${{ github.repository_owner }}/${{ matrix.repo }}"

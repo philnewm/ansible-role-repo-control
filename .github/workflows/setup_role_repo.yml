@@ -14,6 +14,7 @@ env:
   TEMPLATE_STATE_VAR: "ansible_role_template_state"
   TARGET_REPO_NAME: "ansible-${{ inputs.role_name }}"
   TARGET_REPO: "philnewm/ansible-${{ inputs.role_name }}"
+  ROLE_REPO_LIST: ${{ vars.ROLE_REPO_LIST }}
   ROLE_NAME: ${{ inputs.role_name }}
   FILE_LIST: ${{ vars.FILE_LIST }}
   TEMPLATE_REPO: "philnewm/ansible-role-template"
@@ -45,6 +46,29 @@ jobs:
       - name: 🤐 Set repo secrets
         run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
+
+  update-role-repo-list:
+    runs-on: ubuntu-latest
+    needs: create-repo
+
+    steps:
+      - name: ➕ Append new repo to list
+        id: update_list
+        run: |
+          current_list="${{ env.ROLE_REPO_LIST }}"
+
+          # Add a comma if the list is not empty, then append the new repo name
+          if [[ -n "$current_list" && "$current_list" != *"," ]]; then
+            current_list="${current_list},"
+          fi
+
+          updated_list="${current_list}${{ env.TARGET_REPO_NAME }}"
+          echo "updated_list=$updated_list" >> $GITHUB_OUTPUT
+
+      - name: 💾 Set updated ROLE_REPO_LIST
+        run: |
+          gh variable set ROLE_REPO_LIST --repo "${{ github.repository }}" --body "${{ steps.update_list.outputs.updated_list }}"
+
 
   update-names:
     runs-on: ubuntu-latest
