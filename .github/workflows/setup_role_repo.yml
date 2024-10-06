@@ -11,7 +11,8 @@ env:
   ANSIBLE_GALAXY_TOKEN: ${{ secrets.GALAXY_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.REPO_CTRL_TOKEN }}
   TEMPLATE_NAME: "ansible-role-template"  # TODO set from repo name
-  TARGET_REPO: "ansible-${{ inputs.role_name }}"
+  TARGET_REPO_NAME: "ansible-${{ inputs.role_name }}"
+  TARGET_REPO: "philnewm/ansible-${{ inputs.role_name }}"
   ROLE_NAME: ${{ inputs.role_name }}
   FILE_LIST: ${{ vars.FILE_LIST }}
   TEMPLATE_REPO: "philnewm/ansible-role-template"
@@ -36,7 +37,7 @@ jobs:
 
       - name: Set repo secrets
         run: |
-          gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ secrets.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
+          gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
 
   update_names:
     runs-on: ubuntu-latest
@@ -58,8 +59,8 @@ jobs:
 
       - name: Replace template Name
         run: |
-          TEMPLATE_NAME="${{ github.event.inputs.template-name }}"
-          NEW_NAME="${{ inputs.repo_name }}"
+          TEMPLATE_NAME="${{ env.TEMPLATE_NAME }}"
+          NEW_NAME="${{ inputs.role_name }}"
           
           # Loop through each file and replace TEMPLATE_NAME with NEW_NAME
           for file in ${{ steps.parse_files.outputs.files }}; do
