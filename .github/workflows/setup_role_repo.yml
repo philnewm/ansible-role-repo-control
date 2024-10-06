@@ -54,6 +54,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.TARGET_REPO }}
+          token: ${{ env.GITHUB_TOKEN }}
 
       - name: Parse Files to Update
         id: parse_files
