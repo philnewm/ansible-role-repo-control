@@ -1,4 +1,4 @@
-name: Update galaxy token
+name: 🔃 Update galaxy token
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ jobs:
     outputs:
       repo_list: ${{ steps.prepare.outputs.repo_list }}
     steps:
-      - name: Convert comma-separated list to JSON array
+      - name: 💱 Convert comma-separated list to JSON array
         id: prepare
         run: |
           # Convert ROLE_REPO_LIST from comma-separated to JSON array
@@ -30,6 +30,6 @@ jobs:
         repo: ${{ fromJson(needs.prepare-repo-list.outputs.repo_list) }}
 
     steps:
-      - name: Set or update galaxy token
+      - name: 🔁 Set or update galaxy token
         run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ matrix.repo }}

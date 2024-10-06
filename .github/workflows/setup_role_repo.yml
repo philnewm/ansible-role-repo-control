@@ -1,4 +1,4 @@
-name: Create new role repo
+name: 🌟 Create new role repo
 
 on:
   workflow_dispatch:
@@ -23,18 +23,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Create new Repo `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`
+      - name: ⭐ Create new Repo `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`
         run: |
           gh repo create ${{ env.TARGET_REPO }} --template ${{ env.TEMPLATE_REPO }} --public
           echo "::notice::Created repository '${{ env.TARGET_REPO }}' from template '${{ env.TEMPLATE_REPO }}'"
 
-      - name: Get repo owner
+      - name: 👑 Get repo owner
         id: query-owner
         run: |
           repo_owner=$(gh repo view philnewm/ansible-gnome --json owner --jq '.owner.login')
           echo "repo_owner=$repo_owner" >> $GITHUB_OUTPUT
 
-      - name: Add ${{ github.actor }} as repo collaborator
+      - name: 🫂 Add ${{ github.actor }} as repo collaborator
         if: steps.query-owner.outputs.repo_owner != github.actor
         run: |
           gh api --method PUT \
@@ -42,7 +42,7 @@ jobs:
             "/repos/${{ env.TARGET_REPO }}/collaborators/${{ github.actor }}" \
             -f permission=admin
 
-      - name: Set repo secrets
+      - name: 🤐 Set repo secrets
         run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
 
@@ -57,14 +57,14 @@ jobs:
           repository: ${{ env.TARGET_REPO }}
           token: ${{ env.GITHUB_TOKEN }}
 
-      - name: Parse Files to Update
+      - name: 🗃️ Parse Files to Update
         id: parse_files
         run: |
           files_to_update="${{ env.FILE_LIST }}"
           IFS=',' read -r -a file_array <<< "$files_to_update"
           echo "files=${file_array[@]}" >> $GITHUB_OUTPUT
 
-      - name: Replace template Name
+      - name: 📂 Replace template Name
         run: |
           TEMPLATE_NAME="${{ env.TEMPLATE_NAME }}"
           NEW_NAME="${{ env.TARGET_REPO_NAME }}"
@@ -73,14 +73,14 @@ jobs:
             sed -i "s/$TEMPLATE_NAME/$NEW_NAME/g" "$file"
           done
 
-      - name: Prepare state variable
+      - name: ⚙️ Prepare state variable
         id: set-state-far
         run: |
           input_string="${{ env.ROLE_NAME }}"
           state_var="${input_string//-/_}_state"
           echo "state_var=$state_var" >> $GITHUB_OUTPUT
 
-      - name: Replace state variable
+      - name: 📂 Replace state variable
         run: |
           TEMPLATE_STATE_VAR="${{ env.TEMPLATE_STATE_VAR }}"
           NEW_STATE_VAR="${{ steps.set-state-far.outputs.state_var }}"
@@ -89,7 +89,7 @@ jobs:
             sed -i "s/$TEMPLATE_STATE_VAR/$NEW_STATE_VAR/g" "$file"
           done
 
-      - name: Commit Changes
+      - name: ✅ Commit Changes
         run: |
           git config --local user.name "${{ github.actor }}"
           git config --local user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
