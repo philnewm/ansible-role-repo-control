@@ -69,7 +69,6 @@ jobs:
           TEMPLATE_NAME="${{ env.TEMPLATE_NAME }}"
           NEW_NAME="${{ env.TARGET_REPO_NAME }}"
           
-          # Loop through each file and replace TEMPLATE_NAME with NEW_NAME
           for file in ${{ steps.parse_files.outputs.files }}; do
             sed -i "s/$TEMPLATE_NAME/$NEW_NAME/g" "$file"
           done
@@ -86,7 +85,6 @@ jobs:
           TEMPLATE_STATE_VAR="${{ env.TEMPLATE_NAME }}"
           NEW_STATE_VAR="${{ steps.set-state-far.outputs.state_var }}"
 
-          # Loop through each file and replace TEMPLATE_NAME with NEW_NAME
           for file in ${{ steps.parse_files.outputs.files }}; do
             sed -i "s/TEMPLATE_STATE_VAR/$NEW_STATE_VAR/g" "$file"
           done
