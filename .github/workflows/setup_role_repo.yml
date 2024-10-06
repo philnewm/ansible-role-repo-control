@@ -11,6 +11,7 @@ env:
   ANSIBLE_GALAXY_TOKEN: ${{ secrets.GALAXY_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.REPO_CTRL_TOKEN }}
   TEMPLATE_NAME: "ansible-role-template"  # TODO set from repo name
+  TEMPLATE_STATE_VAR: "ansible_role_template_state"
   TARGET_REPO_NAME: "ansible-${{ inputs.role_name }}"
   TARGET_REPO: "philnewm/ansible-${{ inputs.role_name }}"
   ROLE_NAME: ${{ inputs.role_name }}
@@ -63,19 +64,31 @@ jobs:
           IFS=',' read -r -a file_array <<< "$files_to_update"
           echo "files=${file_array[@]}" >> $GITHUB_OUTPUT
 
-      - name: Show directory
-        run: |
-          echo "$(pwd)"
-          echo "$(ls -la)"
-
       - name: Replace template Name
         run: |
           TEMPLATE_NAME="${{ env.TEMPLATE_NAME }}"
-          NEW_NAME="${{ inputs.role_name }}"
+          NEW_NAME="${{ env.TARGET_REPO_NAME }}"
           
           # Loop through each file and replace TEMPLATE_NAME with NEW_NAME
           for file in ${{ steps.parse_files.outputs.files }}; do
             sed -i "s/$TEMPLATE_NAME/$NEW_NAME/g" "$file"
+          done
+
+      - name: Prepare state variable
+        id: set-state-far
+        run: |
+          input_string="${{ env.ROLE_NAME }}"
+          state_var="${input_string//-/_}"
+          echo "state_var=$state_var" >> $GITHUB_OUTPUT
+
+      - name: Replace state variable
+        run: |
+          TEMPLATE_STATE_VAR="${{ env.TEMPLATE_NAME }}"
+          NEW_STATE_VAR="${{ steps.set-state-far.outputs.state_var }}"
+
+          # Loop through each file and replace TEMPLATE_NAME with NEW_NAME
+          for file in ${{ steps.parse_files.outputs.files }}; do
+            sed -i "s/TEMPLATE_STATE_VAR/$NEW_STATE_VAR/g" "$file"
           done
 
       - name: Commit Changes
