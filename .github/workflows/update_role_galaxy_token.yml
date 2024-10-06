@@ -1,0 +1,33 @@
+name: Update galaxy token
+
+on:
+  workflow_dispatch:
+
+env:
+  ANSIBLE_GALAXY_TOKEN: ${{ secrets.GALAXY_TOKEN }}
+  ROLE_REPO_LIST: ${{ vars.ROLE_REPO_LIST }}
+
+jobs:
+  prepare-list:
+    runs-on: ubuntu-latest
+    outputs:
+      repo-list: ${{ steps.prepare.outputs.repo-list }}
+    steps:
+      - name: Convert comma-separated list to JSON array
+        id: prepare
+        run: |
+          # Convert ROLE_REPO_LIST from comma-separated to JSON array
+          repos="[\"$(echo '${{ env.ROLE_REPO_LIST }}' | sed 's/,/\",\"/g')\"]"
+          echo "repo_list=$repos" >> $GITHUB_OUTPUT
+
+  update-galaxy-token:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        repo: ${{ fromJson(needs.prepare.outputs.repo_list) }}
+
+    steps:
+      - name: Set or update galaxy token
+        runs: |
+          gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ matrix.repo }}
