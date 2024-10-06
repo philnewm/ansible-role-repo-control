@@ -8,10 +8,10 @@ env:
   ROLE_REPO_LIST: ${{ vars.ROLE_REPO_LIST }}
 
 jobs:
-  prepare-list:
+  prepare-repo-list:
     runs-on: ubuntu-latest
     outputs:
-      repo-list: ${{ steps.prepare.outputs.repo-list }}
+      repo_list: ${{ steps.prepare.outputs.repo_list }}
     steps:
       - name: Convert comma-separated list to JSON array
         id: prepare
@@ -22,12 +22,13 @@ jobs:
 
   update-galaxy-token:
     runs-on: ubuntu-latest
+    needs: prepare-repo-list
 
     strategy:
       matrix:
-        repo: ${{ fromJson(needs.prepare.outputs.repo_list) }}
+        repo: ${{ fromJson(needs.prepare-repo-list.outputs.repo_list) }}
 
     steps:
       - name: Set or update galaxy token
-        runs: |
+        run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ matrix.repo }}
