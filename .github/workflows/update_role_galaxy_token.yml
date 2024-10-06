@@ -32,4 +32,4 @@ jobs:
     steps:
       - name: 🔁 Set or update galaxy token
         run: |
-          gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ matrix.repo }}
+          gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo "${{ github.repository_owner }}/${{ matrix.repo }}"
