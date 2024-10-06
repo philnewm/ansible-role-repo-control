@@ -77,7 +77,7 @@ jobs:
         id: set-state-far
         run: |
           input_string="${{ env.ROLE_NAME }}"
-          state_var="${input_string//-/_}"
+          state_var="${input_string//-/_}_state"
           echo "state_var=$state_var" >> $GITHUB_OUTPUT
 
       - name: Replace state variable
