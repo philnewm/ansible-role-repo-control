@@ -18,7 +18,7 @@ env:
 
 jobs:
   create_repo:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Create new Repo `${{ env.TARGET_REPO }}` from template `${{ env.TEMPLATE_REPO }}`
@@ -39,13 +39,11 @@ jobs:
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ secrets.ANSIBLE_GALAXY_TOKEN }}" --repo ${{ env.TARGET_REPO }}
 
   update_names:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          depth: 0
+        uses: actions/checkout@v4
 
       - name: Parse Files to Update
         id: parse_files
