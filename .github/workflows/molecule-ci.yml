@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  moelcule-ci:
+  molecule-ci:
     runs-on: ubuntu-latest
 
     steps:
