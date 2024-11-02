@@ -94,7 +94,8 @@ jobs:
           NEW_NAME="${{ inputs.role_name }}"
           NEW_ROLE_NAME="${NEW_NAME^}-Role"
 
-          sed -i "s/$TEMPLATE_NAME/$NEW_ROLE_NAME/g" "README.md"
+          sed -i "s/Role Name/$NEW_ROLE_NAME/g" "README.md"
+          sed -i "s/$TEMPLATE_NAME/$TARGET_REPO_NAME/g" "README.md"
 
       - name: ✅ Commit Changes
         run: |
