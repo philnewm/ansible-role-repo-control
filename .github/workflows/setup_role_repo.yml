@@ -81,6 +81,14 @@ jobs:
           repository: ${{ env.TARGET_REPO }}
           token: ${{ env.GITHUB_TOKEN }}
 
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Update meta role name
+        run: |
+          yq e '.galaxy_info.role_name = "${{ inputs.role_name }}"' -i meta/main.yml
+
       - name: 🗃️ Parse Files to Update
         id: parse_files
         run: |
