@@ -16,7 +16,6 @@ env:
   TARGET_REPO: "philnewm/ansible-${{ inputs.role_name }}"
   ROLE_REPO_LIST: ${{ vars.ROLE_REPO_LIST }}
   ROLE_NAME: ${{ inputs.role_name }}
-  FILE_LIST: ${{ vars.FILE_LIST }}
   TEMPLATE_REPO: "philnewm/ansible-role-template"
 
 jobs:
@@ -89,37 +88,13 @@ jobs:
         run: |
           yq e '.galaxy_info.role_name = "${{ inputs.role_name }}"' -i meta/main.yml
 
-      - name: 🗃️ Parse Files to Update
-        id: parse_files
-        run: |
-          files_to_update="${{ env.FILE_LIST }}"
-          IFS=',' read -r -a file_array <<< "$files_to_update"
-          echo "files=${file_array[@]}" >> $GITHUB_OUTPUT
-
-      - name: 📂 Replace template Name
+      - name: 📂 Replace template name in readme
         run: |
           TEMPLATE_NAME="${{ env.TEMPLATE_NAME }}"
-          NEW_NAME="${{ env.TARGET_REPO_NAME }}"
-          
-          for file in ${{ steps.parse_files.outputs.files }}; do
-            sed -i "s/$TEMPLATE_NAME/$NEW_NAME/g" "$file"
-          done
+          NEW_NAME="${{ inputs.role_name }}"
+          NEW_ROLE_NAME="${NEW_NAME^}-Role"
 
-      - name: ⚙️ Prepare state variable
-        id: set-state-far
-        run: |
-          input_string="${{ env.ROLE_NAME }}"
-          state_var="${input_string//-/_}_state"
-          echo "state_var=$state_var" >> $GITHUB_OUTPUT
-
-      - name: 📂 Replace state variable
-        run: |
-          TEMPLATE_STATE_VAR="${{ env.TEMPLATE_STATE_VAR }}"
-          NEW_STATE_VAR="${{ steps.set-state-far.outputs.state_var }}"
-
-          for file in ${{ steps.parse_files.outputs.files }}; do
-            sed -i "s/$TEMPLATE_STATE_VAR/$NEW_STATE_VAR/g" "$file"
-          done
+          sed -i "s/$TEMPLATE_NAME/$NEW_ROLE_NAME/g" "README.md"
 
       - name: ✅ Commit Changes
         run: |
