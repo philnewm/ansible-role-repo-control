@@ -6,16 +6,26 @@ on:
   workflow_call:
     inputs:
       scenario_name:
-        description: Scenario to run for this moelcule test
+        description: Scenario to run for this molecule test
         type: string
-        required: true
-    
+        required: false
+
 permissions:
   contents: read
 
 jobs:
   molecule-ci:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        distros:
+          - test_alma9
+          - test_rocky9
+          - test_centosstream9
+          - test_ubuntu2204
+          - test_debian12
+      fail-fast: false
 
     steps:
       - name: Checkout repo
@@ -59,6 +69,6 @@ jobs:
 
       - name: Run molecule test
         run: |
-          molecule test -s ${{ inputs.scenario_name }}
+          molecule test -s ${{ matrix.distros }}
 
 ...
