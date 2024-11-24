@@ -14,6 +14,24 @@ on:
         type: string
         required: false
         default: ''
+    secrets:
+      secret_01:
+        description: Arbitrary secret number 1
+        required: false
+      secret_02:
+        description: Arbitrary secret number 2
+        required: false
+      secret_03:
+        description: Arbitrary secret number 3
+        required: false
+      secret_04:
+        description: Arbitrary secret number 4
+        required: false
+      secret_05:
+        description: Arbitrary secret number 5
+        required: false
+
+
 
 permissions:
   contents: read
