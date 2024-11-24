@@ -9,6 +9,11 @@ on:
         description: Scenario to run for this molecule test
         type: string
         required: true
+      pre_run_script:
+        description: Execute this logic before starting the molecule test run
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -28,6 +33,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
+      - name: Pre-Run script
+        if: ${{ inputs.pre_run_script }}
+        run: |
+          ${{ inputs.pre_run_script }}
 
       - name: Install dependencies
         run: |
