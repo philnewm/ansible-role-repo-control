@@ -9,11 +9,10 @@ on:
         description: Scenario to run for this molecule test
         type: string
         required: true
-      pre_run_script:
-        description: Execute this logic before starting the molecule test run
-        type: string
-        required: false
-        default: ''
+      houdini_role_pre_script:
+        description: Execute this role specific logic before starting the molecule test run
+        type: boolean
+        default: false
 
 
 permissions:
@@ -36,7 +35,7 @@ jobs:
           python-version: "3.10"
 
       - name: Houdini-Role Pre-Run Script
-        if: ${{ inputs.pre_run_script }}
+        if: ${{ inputs.houdini_role_pre_script }}
         run: |
           sed -i "s/client_id='your OAuth application ID'/client_id='${{ secrets.SIDEFX_CLIENT_ID }}'/g" ./scripts/api_download.py
           sed -i "s/client_secret_key='your OAuth application secret'/client_secret_key='${{ secrets.SIDEFX_CLIENT_SECRET }}'/g" ./scripts/api_download.py
