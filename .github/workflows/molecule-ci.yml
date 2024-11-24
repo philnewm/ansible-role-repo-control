@@ -14,23 +14,6 @@ on:
         type: string
         required: false
         default: ''
-    secrets:
-      secret_01:
-        description: Arbitrary secret number 1
-        required: false
-      secret_02:
-        description: Arbitrary secret number 2
-        required: false
-      secret_03:
-        description: Arbitrary secret number 3
-        required: false
-      secret_04:
-        description: Arbitrary secret number 4
-        required: false
-      secret_05:
-        description: Arbitrary secret number 5
-        required: false
-
 
 
 permissions:
@@ -52,10 +35,11 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Pre-Run script
+      - name: Houdini-Role Pre-Run Script
         if: ${{ inputs.pre_run_script }}
         run: |
-          ${{ inputs.pre_run_script }}
+          sed -i "s/client_id='your OAuth application ID'/client_id='${{ secrets.SIDEFX_CLIENT_ID }}'/g" ./scripts/api_download.py
+          sed -i "s/client_secret_key='your OAuth application secret'/client_secret_key='${{ secrets.SIDEFX_CLIENT_SECRET }}'/g" ./scripts/api_download.py
 
       - name: Install dependencies
         run: |
