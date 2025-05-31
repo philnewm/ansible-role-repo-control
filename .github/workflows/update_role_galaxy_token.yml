@@ -34,6 +34,9 @@ jobs:
         repo: ${{ fromJson(needs.prepare-repo-list.outputs.repo_list) }}
 
     steps:
+      - name: 🔐 Authenticate GH CLI
+        run: gh auth login --with-token <<< "${{ env.GITHUB_TOKEN }}"
+
       - name: 💾 Set or update galaxy token
         run: |
           gh secret set ANSIBLE_GALAXY_TOKEN --body "${{ env.ANSIBLE_GALAXY_TOKEN }}" --repo "${{ github.repository_owner }}/${{ matrix.repo }}"
