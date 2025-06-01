@@ -6,6 +6,7 @@ on:
       role_name:
         type: string
         required: true
+        description: "prefix 'ansible-' will be added automatically"
 
 env:
   ANSIBLE_GALAXY_TOKEN: ${{ secrets.GALAXY_TOKEN }}
