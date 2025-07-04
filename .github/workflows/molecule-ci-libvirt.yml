@@ -87,7 +87,7 @@ jobs:
         run: vagrant --version
 
       - name: Install vagrant libvirt plugin
-        run: vagrant plugin install libvirt
+        run: vagrant plugin install vagrant-libvirt
 
       - name: Verify vagrant plugins
         run: vagrant plugin list
