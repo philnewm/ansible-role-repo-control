@@ -75,6 +75,11 @@ jobs:
       - name: Verify virt-manager
         run: virt-manager --version && libvirtd --version
 
+      - name: Add to group
+        run: sudo usermod -a -G libvirtd $USER
+
+      - name: Verify groups
+        run: groups
       - name: Install vagrant
         run: |
           # Get vagrant gpg key
