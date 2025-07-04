@@ -87,7 +87,7 @@ jobs:
         run: vagrant --version
 
       - name: Install plugin dependency
-        run: sudo apt-get intsall libvirt-dev
+        run: sudo apt-get install libvirt-dev
 
       - name: Install vagrant libvirt plugin
         run: vagrant plugin install vagrant-libvirt
