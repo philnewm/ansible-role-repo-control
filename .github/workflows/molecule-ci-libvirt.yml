@@ -86,6 +86,9 @@ jobs:
       - name: Verify Vagrant installation
         run: vagrant --version
 
+      - name: Install plugin dependency
+        run: sudo apt-get intsall libvirt-dev
+
       - name: Install vagrant libvirt plugin
         run: vagrant plugin install vagrant-libvirt
 
