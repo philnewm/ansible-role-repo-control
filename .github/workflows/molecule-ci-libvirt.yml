@@ -42,10 +42,32 @@ jobs:
           sed -i "s/client_id='your OAuth application ID'/client_id='${{ secrets.SIDEFX_CLIENT_ID }}'/g" ./scripts/api_download.py
           sed -i "s/client_secret_key='your OAuth application secret'/client_secret_key='${{ secrets.SIDEFX_CLIENT_SECRET }}'/g" ./scripts/api_download.py
 
-      - name: Install dependencies
+      - name: Install Ansible dependencies
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements.yml ]; then ansible-galaxy install -r requirements.yml; fi
+
+      - name: Check for submodules and install dependencies
+        shell: bash
+        run: |
+          # Initialize and update submodules if .gitmodules exists
+          if [ -f .gitmodules ]; then
+            git submodule update --init --recursive
+            # Extract submodule paths from .gitmodules
+            SUBMODULE_PATHS=$(git config --file .gitmodules --get-regexp path | awk '{ print $2 }')
+            for submodule in $SUBMODULE_PATHS; do
+              echo "Processing submodule: $submodule"
+              if [ -f "$submodule/requirements.txt" ]; then
+                echo "Installing Python dependencies for $submodule"
+                pip install -r "$submodule/requirements.txt"
+              fi
+              if [ -f "$submodule/requirements.yml" ]; then
+                echo "Installing Ansible dependencies for $submodule"
+                ansible-galaxy install -r "$submodule/requirements.yml"
+              fi
+            done
+          else
+            echo "No submodules found."
+          fi
 
       - name: Install vagrant
         run: |
