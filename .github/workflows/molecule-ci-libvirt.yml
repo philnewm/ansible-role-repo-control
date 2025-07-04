@@ -76,7 +76,7 @@ jobs:
         run: virt-manager --version && libvirtd --version
 
       - name: Add to group
-        run: sudo usermod -a -G libvirtd $USER
+        run: sudo usermod -a -G libvirt $USER
 
       - name: Verify groups
         run: groups
