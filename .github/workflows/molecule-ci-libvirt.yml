@@ -69,6 +69,12 @@ jobs:
             echo "No submodules found."
           fi
 
+      - name: Install virt-manager
+        run: sudo apt-get install virt-manager
+
+      - name: Verify virt-manager
+        run: virt-manager --version && libvirtd --version
+
       - name: Install vagrant
         run: |
           # Get vagrant gpg key
@@ -79,12 +85,6 @@ jobs:
 
       - name: Verify Vagrant installation
         run: vagrant --version
-
-      - name: Install virt-manager
-        run: sudo apt-get install virt-manager
-
-      - name: Verify virt-manager
-        run: virt-manager --version && libvirtd --version
 
       - name: Install vagrant libvirt plugin
         run: vagrant plugin install libvirt
