@@ -80,6 +80,9 @@ jobs:
       - name: Verify Vagrant installation
         run: vagrant --version
 
+      - name: Install virt-manager
+        run: sudo apt-get install virt-manager
+
       - name: Verify virt-manager
         run: virt-manager --version && libvirtd --version
 
