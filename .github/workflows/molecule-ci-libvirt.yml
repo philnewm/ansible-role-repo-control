@@ -80,6 +80,15 @@ jobs:
       - name: Verify Vagrant installation
         run: vagrant --version
 
+      - name: Verify virt-manager
+        run: virt-manager --version && libvirtd --version
+
+      - name: Install vagrant libvirt plugin
+        run: vagrant plugin install libvirt
+
+      - name: Verify vagrant plugins
+        run: vagrant plugin list
+
       - name: Run molecule test
         run: |
           molecule test -s ${{ inputs.scenario_name }}
