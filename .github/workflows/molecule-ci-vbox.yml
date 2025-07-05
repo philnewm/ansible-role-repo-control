@@ -74,7 +74,6 @@ jobs:
             echo "No submodules found."
           fi
 
-      # INFO rolled back to version 7.0.14 cause latest(7.0.16/7.0.18) is not getting detected by vagrant
       - name: Set environment variables for VirtualBox
         run: |
           echo "LOGNAME=$USER" >> $GITHUB_ENV
