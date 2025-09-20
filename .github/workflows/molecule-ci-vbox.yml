@@ -9,9 +9,9 @@ on:
         description: Scenario to run for this molecule test
         type: string
         required: true
-      env_string:
+    secrets:
+      env_secrets:
         description: Custom environment setup for molecule test run
-        type: string
         required: false
 
 env:
