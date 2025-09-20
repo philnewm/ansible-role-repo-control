@@ -95,11 +95,16 @@ jobs:
         run: vagrant --version
 
       - name: Export environment variables
+        shell: bash
         run: |
           if [ -n "${{ secrets.env_secrets }}" ]; then
-            printf "%s\n" "${{ secrets.env_secrets }}" | while IFS= read -r line; do
-              [ -n "$line" ] && echo "$line" >> "$GITHUB_ENV"
-            done
+            # Read each line safely
+            while IFS= read -r line || [ -n "$line" ]; do
+              # Skip empty lines
+              if [ -n "$line" ]; then
+                printf '%s\n' "$line" >> "$GITHUB_ENV"
+              fi
+            done <<< "${{ secrets.env_secrets }}"
           fi
 
       - name: Run molecule test
