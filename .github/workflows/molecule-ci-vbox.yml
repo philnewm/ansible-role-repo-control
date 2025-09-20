@@ -36,12 +36,6 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Houdini-Role Pre-Run Script
-        if: ${{ inputs.houdini_role_pre_script }}
-        run: |
-          sed -i "s/client_id='your OAuth application ID'/client_id='${{ secrets.SIDEFX_CLIENT_ID }}'/g" ./scripts/api_download.py
-          sed -i "s/client_secret_key='your OAuth application secret'/client_secret_key='${{ secrets.SIDEFX_CLIENT_SECRET }}'/g" ./scripts/api_download.py
-
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
