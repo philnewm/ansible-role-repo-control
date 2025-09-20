@@ -96,9 +96,11 @@ jobs:
 
       - name: Export environment variables
         run: |
-          while IFS= read -r line; do
-            echo "$line" >> "$GITHUB_ENV"
-          done <<< "${{ inputs.env_string }}"
+          if [ -n "${{ secrets.env_secrets }}" ]; then
+            while IFS= read -r line; do
+              [ -n "$line" ] && echo "$line" >> "$GITHUB_ENV"
+            done <<< "${{ secrets.env_secrets }}"
+          fi
 
       - name: Run molecule test
         run: |
