@@ -9,10 +9,10 @@ on:
         description: Scenario to run for this molecule test
         type: string
         required: true
-      houdini_role_pre_script:
-        description: Execute this role specific logic before starting the molecule test run
-        type: boolean
-        default: false
+      env_string:
+        description: Custom environment setup for molecule test run
+        type: string
+        required: false
 
 env:
   PYTHON_VERSION: "3.12"
@@ -99,6 +99,12 @@ jobs:
 
       - name: Verify Vagrant installation
         run: vagrant --version
+
+      - name: Export environment variables
+        run: |
+          while IFS= read -r line; do
+            echo "$line" >> "$GITHUB_ENV"
+          done <<< "${{ inputs.env_string }}"
 
       - name: Run molecule test
         run: |
