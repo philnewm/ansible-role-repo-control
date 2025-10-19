@@ -107,6 +107,10 @@ jobs:
             done <<< "${{ secrets.env_secrets }}"
           fi
 
+      - name: Disable KVM kernel extension
+        run: |
+          sudo rmmod kvm_amd && sudo rmmod kvm
+
       - name: Run molecule test
         run: |
           molecule test -s ${{ inputs.scenario_name }}
