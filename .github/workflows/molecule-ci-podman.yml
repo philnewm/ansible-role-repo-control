@@ -72,7 +72,7 @@ jobs:
         run: |
           sudo apt-get install podman -y
 
-      - name: Verify VirtualBox installation
+      - name: Verify podman installation
         run: podman --version
 
       - name: Export environment variables
