@@ -88,15 +88,6 @@ jobs:
             done <<< "${{ secrets.env_secrets }}"
           fi
 
-      # - name: Configure podman for systemd containers
-      #   run: |
-      #     sudo mkdir -p /etc/containers
-      #     sudo bash -c 'cat <<EOF > /etc/containers/containers.conf
-      #     [engine]
-      #     cgroup_manager = "systemd"
-      #     events_logger = "file"
-      #     EOF'
-
       - name: Run molecule test
         run: |
           molecule test -s ${{ inputs.scenario_name }}
