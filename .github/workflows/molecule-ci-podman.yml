@@ -9,6 +9,11 @@ on:
         description: Scenario to run for this molecule test
         type: string
         required: true
+      cleanup:
+        description: Remove a bunch of preinstalled tools and libraries
+        type: boolean
+        required: false
+        default: false
     secrets:
       env_secrets:
         description: Custom environment setup for molecule test run
@@ -25,6 +30,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Show disk usage
+        if: ${{ inputs.cleanup }}
+        run: df -h
+
+      - name: Aggressive cleanup
+        if: ${{ inputs.cleanup }}
+        run: |
+          # Remove Java (JDKs)
+          sudo rm -rf /usr/lib/jvm
+
+          # Remove .NET SDKs
+          sudo rm -rf /usr/share/dotnet
+
+          # Remove Swift toolchain
+          sudo rm -rf /usr/share/swift
+
+          # Remove Haskell (GHC)
+          sudo rm -rf /usr/local/.ghcup
+
+          # Remove Julia
+          sudo rm -rf /usr/local/julia*
+
+          # Remove Android SDKs
+          sudo rm -rf /usr/local/lib/android
+
+          # Remove Chromium (optional if not using for browser tests)
+          sudo rm -rf /usr/local/share/chromium
+
+          # Remove Microsoft/Edge and Google Chrome builds
+          sudo rm -rf /opt/microsoft /opt/google
+
+          # Remove Azure CLI
+          sudo rm -rf /opt/az
+
+          # Remove PowerShell
+          sudo rm -rf /usr/local/share/powershell
+
+          # Remove CodeQL and other toolcaches
+          sudo rm -rf /opt/hostedtoolcache
+
+          docker system prune -af || true
+          docker builder prune -af || true
+          df -h
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
