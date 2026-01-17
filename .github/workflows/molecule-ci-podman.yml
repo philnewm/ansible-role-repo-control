@@ -33,7 +33,7 @@ jobs:
       - name: Show disk usage
         if: ${{ inputs.cleanup }}
         run: df -h
-
+      # https://dev.to/mathio/squeezing-disk-space-from-github-actions-runners-an-engineers-guide-3pjg
       - name: Aggressive cleanup
         if: ${{ inputs.cleanup }}
         run: |
