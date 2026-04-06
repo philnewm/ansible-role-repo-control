@@ -73,12 +73,12 @@ jobs:
           echo "LOGNAME=$USER" >> $GITHUB_ENV
           echo "USER=$(whoami)" >> $GITHUB_ENV
 
-      - name: Install Virtualbox 7.1.X
+      - name: Install Virtualbox 7.2.X
         run: |
           sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian $(lsb_release -sc) contrib" >> /etc/apt/sources.list'
           wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg --dearmor
           sudo apt-get update
-          sudo apt-get install virtualbox-7.1 -y
+          sudo apt-get install virtualbox-7.2 -y
 
       - name: Verify VirtualBox installation
         run: VBoxManage --version
@@ -107,9 +107,9 @@ jobs:
             done <<< "${{ secrets.env_secrets }}"
           fi
 
-      - name: Disable KVM kernel extension
+      - name: Disable kvm kernel extension
         run: |
-          sudo rmmod kvm_amd && sudo rmmod kvm
+          sudo modprobe -r kvm_intel kvm_amd kvm 2>/dev/null || true
 
       - name: Run molecule test
         run: |
