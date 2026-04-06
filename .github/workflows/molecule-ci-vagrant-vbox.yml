@@ -68,14 +68,12 @@ jobs:
             echo "No submodules found."
           fi
 
-      - name: Add molecule vagrant plugin to PYTHONPATH
+      - name: Add molecule vagrant plugin to ANSIBLE_LIBRARY
         run: |
           SITE_PACKAGES=$(python3 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
           export ANSIBLE_LIBRARY=$SITE_PACKAGES/molecule_plugins/vagrant/modules:$PYTHONPATH
           echo "ANSIBLE_LIBRARY=$SITE_PACKAGES/molecule_plugins/vagrant/modules:$PYTHONPATH" >> $GITHUB_ENV
           echo "[DEBUG] ANSIBLE_LIBRARY $ANSIBLE_LIBRARY"
-          echo "[DEBUG] GITHUB_ENV $GITHUB_ENV"
-          ls -ll "$SITE_PACKAGES/molecule_plugins/vagrant/modules"
 
       - name: Set environment variables for VirtualBox
         run: |
