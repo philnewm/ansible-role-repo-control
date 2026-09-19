@@ -15,7 +15,7 @@ on:
         required: false
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.13"
 
 permissions:
   contents: read
@@ -26,13 +26,13 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
