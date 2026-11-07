@@ -87,7 +87,7 @@ jobs:
 
       - name: Update meta role name
         run: |
-          role_name="${ROLE_NAME//-/_}"
+          role_name="${${{ env.ROLE_NAME }}//-/_}"
           yq e '.galaxy_info.role_name = strenv(role_name)' -i meta/main.yml
 
       - name: 📂 Replace template name in readme
