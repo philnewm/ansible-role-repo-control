@@ -87,7 +87,8 @@ jobs:
 
       - name: Update meta role name
         run: |
-          yq e '.galaxy_info.role_name = "${{ inputs.role_name }}"' -i meta/main.yml
+          role_name="${ROLE_NAME//-/_}"
+          yq e '.galaxy_info.role_name = strenv(role_name)' -i meta/main.yml
 
       - name: 📂 Replace template name in readme
         run: |
